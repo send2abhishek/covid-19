@@ -6,3 +6,16 @@ body {
   margin: 0 auto;
   text-align: center;
 }
+.image {
+  width: 370px;
+  margin-top: 50px;
+}
+
+@media (max-width: 770px) {
+  .container {
+    margin: 0 10%;
+  }
+  .image {
+    width: 70%;
+  }
+}

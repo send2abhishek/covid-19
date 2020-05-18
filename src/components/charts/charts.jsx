@@ -64,7 +64,7 @@ const Charts = ({ data, country }) => {
     />
   ) : null;
 
-  return <div className="containers">{country ? barChart : lineChart}</div>;
+  return <div className="containers1">{country ? barChart : lineChart}</div>;
 };
 
 export default Charts;

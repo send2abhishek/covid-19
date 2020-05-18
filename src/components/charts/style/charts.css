@@ -1,3 +1,5 @@
-.containers {
-  width: 80%;
+.containers1 {
+  width: 85%;
+}
+@media (max-width: 770px) {
 }
