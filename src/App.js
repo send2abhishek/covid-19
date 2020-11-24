@@ -1,45 +1,46 @@
-import React, { Component } from "react";
-import Cards from "./components/cards/cards";
-import Charts from "./components/charts/charts";
-import CountryPicker from "./components/countryPicker/countryPicker";
-import "./styles/app.css";
-import { fetchData } from "./api/index";
-import CronaImage from "./images/image.png";
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: {},
-      country: "",
-    };
-  }
+import React from "react";
+import { Route, Switch, withRouter } from "react-router-dom";
+import Home from "./components/home/";
+import Login from "./components/login";
+import User from "./components/user";
+import { Security, LoginCallback, SecureRoute } from "@okta/okta-react";
 
-  async componentDidMount() {
-    const fetch = await fetchData();
-    // console.log("response", fetch);
-    this.setState({
-      data: fetch,
-    });
-  }
+const OKTA_DOMAIN = "dev-6427851.okta.com";
+const CLIENT_ID = "0oa7z12z7ei3V77QP5d5";
+const CALLBACK_PATH = "/implicit/callback";
 
-  handleCountryChange = async (country) => {
-    const fetch = await fetchData(country);
-    this.setState({
-      data: fetch,
-      country: country,
-    });
-  };
-  render() {
-    const { data, country } = this.state;
-    return (
-      <div className="container">
-        <img src={CronaImage} alt="covid-19" className="image" />
-        <Cards data={data} />
-        <CountryPicker change={(data) => this.handleCountryChange(data)} />
-        <Charts data={data} country={country} />
-      </div>
-    );
+const ISSUER = `https://${OKTA_DOMAIN}/oauth2/default`;
+const HOST = window.location.host;
+const REDIRECT_URI = `http://localhost:3000${CALLBACK_PATH}`;
+const SCOPES = "openid profile email";
+
+const config = {
+  issuer: ISSUER,
+  clientId: CLIENT_ID,
+  redirectUri: REDIRECT_URI,
+  scope: SCOPES.split(/\s+/),
+};
+
+function App(props) {
+  function onAuthRequired() {
+    props.history.push("/login");
   }
+  return (
+    <div>
+      <Switch>
+        <Security {...config} onAuthRequired={onAuthRequired}>
+          <Route path="/" exact component={Home}></Route>
+          <SecureRoute path="/user" exact component={User}></SecureRoute>
+          <Route path={CALLBACK_PATH} exact component={LoginCallback} />
+          <Route
+            path="/login"
+            exact
+            render={() => <Login baseUrl="https://dev-6427851.okta.com" />}
+          />
+        </Security>
+      </Switch>
+    </div>
+  );
 }
 
-export default App;
+export default withRouter(App);

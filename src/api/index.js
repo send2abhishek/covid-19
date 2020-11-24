@@ -25,7 +25,7 @@ export const fetchData = async (country) => {
 export const fetchDailyData = async () => {
   try {
     const { data } = await axios.get(`${url}/daily`);
-    // console.log("data daily from axios", data);
+    console.log("data daily from axios", data);
 
     const modifiedData = data.map((datilyData) => ({
       confirmed: datilyData.confirmed.total,
